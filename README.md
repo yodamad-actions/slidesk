@@ -24,39 +24,31 @@ permissions:
 | Input | Description | Default value |
 |-------|-------------|---------------|
 | output-dir | Directory containing the static site output | public |
-| image-version | SLidesk image version to use | latest |
 | workdir | Directory containing `main.sdf` slidesk file | . |
 
 ## Sample
 
 ```yml
-name: Deploy with Toto
+name: Deploy with Slidesk
 on:
   push:
     branches: [ "main" ]
-  workflow_dispatch:
 
 ## Very important
-
 permissions:
   contents: read
   pages: write       # required by deploy-pages
   id-token: write    # required by deploy-pages
 
 jobs:
-  build-and-deploy:
+  slidesk:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - name: Build & Deploy
-        id: toto
-        uses: yodamad-actions/slidesk@0.0.2
+        uses: yodamad-actions/slidesk@1.0.0
         with:
           output-dir: public
-          image-version: latest
           workdir: slidesk
-
-      - name: Show site URL
-        run: echo "Deployed at ${{ steps.toto.outputs.page_url }}"
 ```
