@@ -10,10 +10,6 @@ inputs:
     description: "Directory containing the static site output (relative to repo root)"
     required: true
     default: "public"
-  image-version:
-    description: "Docker image to use (e.g., toto:latest or ghcr.io/you/toto:1.2)"
-    required: true
-    default: "latest"
   workdir:
     description: "Working directory inside the container"
     required: true
@@ -31,8 +27,7 @@ runs:
       env:
         WORKDIR: ${{ inputs.workdir }}
         OUTPUT_DIR: ${{ inputs.output-dir }}
-        IMAGE: gouz/slidesk:${{ inputs.image-version }}
-      uses: docker://${{ env.IMAGE }}
+      uses: docker://gouz/slidesk:latest
       with: 
         args: slidesk -s ${{ env.OUTPUT_DIR }} ${{ env.WORKDIR }}
 
