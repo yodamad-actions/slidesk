@@ -51,7 +51,7 @@ jobs:
 
       - name: Build & Deploy
         id: toto
-        uses: your-org/your-repo@v1
+        uses: yodamad-actions/slidesk@0.0.2
         with:
           output-dir: public
           image-version: latest

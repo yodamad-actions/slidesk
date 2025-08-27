@@ -28,9 +28,13 @@ runs:
   using: "composite"
   steps:
     - name: Build presentation
-      uses: docker://gouz/slidesk:${{ inputs.image-version }}
+      env:
+        WORKDIR: ${{ inputs.workdir }}
+        OUTPUT_DIR: ${{ inputs.output-dir }}
+        IMAGE: gouz/slidesk:${{ inputs.image-version }}
+      uses: docker://${{ env.IMAGE }}
       with: 
-        args: slidesk -s ${{ output-dir }} ${{ inputs.workdir }}
+        args: slidesk -s ${{ env.OUTPUT_DIR }} ${{ env.WORKDIR }}
 
     - name: Verify output directory exists and is not empty
       shell: bash
