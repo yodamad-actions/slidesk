@@ -1,0 +1,50 @@
+name: "Slidesk Deploy"
+description: "Build and publish your Slidesk presentation on GitHub Pages"
+author: "yodamad"
+branding:
+  icon: "upload-cloud"
+  color: "red"
+
+inputs:
+  output-dir:
+    description: "Directory containing the static site output (relative to repo root)"
+    required: true
+    default: "public"
+  image-version:
+    description: "Docker image to use (e.g., toto:latest or ghcr.io/you/toto:1.2)"
+    required: true
+    default: "latest"
+  workdir:
+    description: "Working directory inside the container"
+    required: true
+    default: "."
+
+outputs:
+  page_url:
+    description: "Deployed GitHub Pages URL"
+    value: ${{ steps.deploy.outputs.page_url }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Build presentation
+      uses: docker://gouz/slidesk:${{ inputs.image-version }}
+      with: 
+        args: slidesk -s ${{ output-dir }} ${{ inputs.workdir }}
+
+    - name: Verify output directory exists and is not empty
+      shell: bash
+      run: |
+        set -euo pipefail
+        ls -R
+        test -d "${{ inputs.output-dir }}"
+        test -n "$(ls -A "${{ inputs.output-dir }}")" || { echo "Output dir is empty"; exit 1; }
+
+    - name: Upload Pages artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ${{ inputs.output-dir }}
+
+    - name: Deploy to GitHub Pages
+      id: deploy
+      uses: actions/deploy-pages@v4
